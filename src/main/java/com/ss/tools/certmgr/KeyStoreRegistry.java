@@ -1,4 +1,4 @@
-package com.schneider.tools.certmgr;
+package com.ss.tools.certmgr;
 
 import java.security.KeyStore;
 import java.util.HashMap;
