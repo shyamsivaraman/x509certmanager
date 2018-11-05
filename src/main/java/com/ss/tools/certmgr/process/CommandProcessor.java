@@ -1,6 +1,10 @@
 package com.ss.tools.certmgr.process;
 
+import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -20,7 +24,8 @@ public class CommandProcessor {
 		LOAD_KEYSTORE, DISP_ALL_KEYSTORE, DISP_KEYSTORE_ENTRIES, COMPARE_KEYSTORE, MOVE_CERTS, SAVE_SESSION, FIND_CERT
 	}
 	
-	public void process(COMMAND command, LinkedList<String> operandStack, boolean internal) {
+	public void process(COMMAND command, LinkedList<String> operandStack, boolean internal) 
+			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 		if(command == COMMAND.LOAD_KEYSTORE) {
 			if(operandStack.size() != 2)
 				return;

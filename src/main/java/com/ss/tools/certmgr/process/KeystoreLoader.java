@@ -13,26 +13,15 @@ import com.ss.tools.certmgr.KeyStoreRegistry;
 
 public class KeystoreLoader {
 
-	public void process(String keyStorePath, String keyStorePassword) {
+	public void process(String keyStorePath, String keyStorePassword) throws KeyStoreException, 
+		NoSuchAlgorithmException, CertificateException, IOException {
 		File f = new File(keyStorePath);
 		String fileName = f.getName();
 		
-		try {
-			FileInputStream fis = new FileInputStream(f);
-			KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyStore.load(fis, keyStorePassword.toCharArray());
-			System.out.println("INFO: Keystore " + fileName + " loaded");
-			KeyStoreRegistry.getInstance().registerKeystore(fileName, keyStore);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		FileInputStream fis = new FileInputStream(f);
+		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyStore.load(fis, keyStorePassword.toCharArray());
+		System.out.println("INFO: Keystore " + fileName + " loaded");
+		KeyStoreRegistry.getInstance().registerKeystore(fileName, keyStore);
 	}
 }

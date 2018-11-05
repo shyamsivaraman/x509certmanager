@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class SessionStore {
 
-	private String sessionFile = System.getenv("TEMP") + File.separator + "certmgr.session";
+	private String sessionFile = System.getProperty("java.io.tmpdir") + File.separator + "certmgr.session";
 	private HashMap<String, CommandSession> sessionData = new HashMap<>();
 	private static final SessionStore m_Instance = new SessionStore();
 	
@@ -21,12 +21,11 @@ public class SessionStore {
 		private String command;
 		private String name;
 		private LinkedList<String> parameters;
-		private static int counter = 1;
 		
 		public CommandSession(String c, LinkedList<String> p) {
 			this.command = c;
 			this.parameters = p;
-			this.name = c + "-" + counter++;
+			this.name = c + "-" + System.currentTimeMillis();
 		}
 		
 		public int hashCode() {
@@ -67,7 +66,10 @@ public class SessionStore {
 		FileOutputStream fos = null;
 		
 		File f = new File(sessionFile);
+		
 		try {
+			System.out.println("Session File: " + f.getCanonicalPath());
+			
 			if(!f.exists()) {
 					f.createNewFile();
 			}

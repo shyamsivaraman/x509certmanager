@@ -38,9 +38,10 @@ public class KeyStoreExplorer {
 			while(aliases.hasMoreElements()) {
 				KeystoreEntry ke = null;
 				String alias = aliases.nextElement();
+				boolean isPrivate = this.keystore.isKeyEntry(alias);
 				Certificate[] certificateChain = this.keystore.getCertificateChain(alias);
 				
-				if(this.keystore.isKeyEntry(alias)) {
+				if(isPrivate) {
 					ke = new KeystoreEntry(this.keystore.getKey(alias, "Passw0rd".toCharArray()), 
 							(certificateChain == null) ? new Certificate[] { this.keystore.getCertificate(alias) }: certificateChain);
 				} else {
@@ -51,7 +52,7 @@ public class KeyStoreExplorer {
 					this._printDetailed(ke, counter++, alias);
 				} else {
 					String b = this._getBlock("  " + counter++ + " : " + alias, 54);
-					System.out.println(b + ": " + ke.getThumbprint());
+					System.out.println(b + ": " + ke.getThumbprint() + " : " + ((isPrivate)?"PRIVATE":"PUBLIC"));
 				}
 			}
 			

@@ -1,5 +1,9 @@
 package com.ss.tools.certmgr;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,6 +70,8 @@ public class CLIMain {
 				"*  2. Having Subject text",
 				"*  3. Expiring in X month(s)",
 				"*  4. Self-signed",
+				"*  5. Private key entries only",
+				"*  6. Public key entries only",
 				"> Please enter the search field: ",
 				"> Enter relevant search text: ",
 				"$PROCESS$"
@@ -99,7 +105,12 @@ public class CLIMain {
 		for(String key : sessionData.keySet()) {
 			CommandSession cs = sessionData.get(key);
 			if(cs.getCommand().equals("LOAD_KEYSTORE")) {
-				new CommandProcessor().process(COMMAND.LOAD_KEYSTORE, cs.getParameters(), true);
+				try {
+					new CommandProcessor().process(COMMAND.LOAD_KEYSTORE, cs.getParameters(), true);
+				} catch (Exception e) {
+					System.out.println("[ERROR] Failed processing session command for: " + cs.getCommand() + 
+							" with parameters: " + cs.getParameters());
+				}
 			}
 		}
 	}
@@ -119,8 +130,13 @@ public class CLIMain {
 					val = (val == null) ? "" : val;
 					operandStack.push(val);
 				} else if(m.equals("$PROCESS$")) {
-					this.processInput(menuItem);
-					operandStack.clear();
+					try {
+						this.processInput(menuItem);
+					} catch(Exception e) {
+						System.out.println("[ERROR] " + e.getMessage());
+					} finally {
+						operandStack.clear();
+					}
 				} else if(m.startsWith("#")) {
 					menuItem = this.displayContinuationMenu(input, menuItem, m);
 					curMenuItem = 0;
@@ -141,7 +157,8 @@ public class CLIMain {
 		System.out.println("Program Exited\n");
 	}
 	
-	private void processInput(String menuItem) {
+	private void processInput(String menuItem) 
+			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 		System.out.println("");
 		//System.out.println("Processing command " + menuItem + " with stack size: (" + operandStack.size() + ")");
 		
